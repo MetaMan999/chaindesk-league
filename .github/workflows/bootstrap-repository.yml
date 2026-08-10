@@ -1,0 +1,33 @@
+name: Import ChainDesk League source
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - chaindesk-league-github-pages-ready.zip
+      - .github/workflows/bootstrap-repository.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Expand validated application source
+        run: |
+          unzip -o chaindesk-league-github-pages-ready.zip
+          rm chaindesk-league-github-pages-ready.zip
+          rm .github/workflows/bootstrap-repository.yml
+
+      - name: Commit complete repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Import complete ChainDesk League application"
+          git push
