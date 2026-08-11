@@ -416,6 +416,10 @@ For Stock Tokens, synchronize only canonical contract addresses and UIDs from Ro
 
 The exact testnet release checklist is in [docs/ROBINHOOD_TESTNET_DEPLOYMENT.md](docs/ROBINHOOD_TESTNET_DEPLOYMENT.md). Full integration and operational requirements are in [docs/ROBINHOOD_STOCK_TOKEN_INTEGRATION.md](docs/ROBINHOOD_STOCK_TOKEN_INTEGRATION.md).
 
+### Live Robinhood testnet deployment
+
+The brokerage layer was deployed and acceptance-tested on Robinhood Chain Testnet on 2026-08-11. Public addresses, explorer links, the test broker binding, and the verified progression result are recorded in [`deployments/robinhood-testnet.json`](deployments/robinhood-testnet.json). The qualified Stock Token partner is intentionally unset, so only the valueless `bbUSD`/`bbETH` test loop is active.
+
 ## Managed portfolios and scoring
 
 Managed accounts never custody real assets. A client's allocated credits and virtual positions are keyed by client wallet plus banker profile. Only the current banker profile owner can rebalance, and only within the published mandate. Clients may always withdraw uninvested paper-account cash, including after a season closes.
