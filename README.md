@@ -10,6 +10,7 @@ The default experience is deliberately **not** a securities platform: markets ar
 
 - A new default 3D Wall Street career world with third-person and first-person cameras, block-by-block roaming, collision, moving traffic, and resident NPC bankers.
 - A complete graphics remaster: cinematic 32-bit-inspired title art, session-aware sky and lighting, detailed façades, glowing windows, Exchange columns, a bronze bull landmark, animated banker rigs, modeled vehicles, street furniture, richer pixel materials, and glass-and-brass HUD styling.
+- An original procedural Wall Street jingle with brass-like notes, ticker percussion, an Exchange bell, and a persistent sound toggle; it uses no sampled or proprietary music.
 - Eight data-driven city programs across the Exchange, bank, brokerage, coffee shop, subway, and simulated OTC zone; each program defines energy, cooldown, XP, reputation, commission, AUM, and optional chain intent.
 - Glowing workplace markers, contextual work menus, career levels, energy, job titles, touch controls, and persistent career progress.
 - Tile-based Wall Street overworld with collision, keyboard movement, and touch controls.

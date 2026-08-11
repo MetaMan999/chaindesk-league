@@ -3,6 +3,7 @@ import { useAccount } from "wagmi";
 import { WalletButton } from "./components/WalletButton";
 import { City3D } from "./components/City3D";
 import { OnchainBrokerConsole, type ConfirmedRpgSwap } from "./components/OnchainBrokerConsole";
+import { playWallStreetJingle, storedSoundEnabled, storeSoundEnabled } from "./lib/audio";
 import { chainHookCatalog, createChainIntent, regulatedMarketGate, type ChainIntent } from "./lib/chainHooks";
 import { districtPulse, districtStandings, type BrokerStanding, type DistrictPulse } from "./lib/livingWorld";
 import type { ProgramResult } from "./lib/cityPrograms";
@@ -138,6 +139,7 @@ export default function App() {
   const [savedFlash, setSavedFlash] = useState(false);
   const [selectedProfileId, setSelectedProfileId] = useState<bigint>();
   const [worldClock, setWorldClock] = useState(() => Date.now());
+  const [soundEnabled, setSoundEnabled] = useState(storedSoundEnabled);
   const { isConnected } = useAccount();
   const onchainBroker = useOnchainBroker(selectedProfileId);
 
@@ -412,6 +414,7 @@ export default function App() {
   }, [hasSave, interact, move, screen]);
 
   function startGame(mode: "new" | "continue") {
+    if (soundEnabled) void playWallStreetJingle();
     const next = mode === "continue" ? loadSave() ?? createNewSave() : createNewSave();
     setSave(next);
     setScreen("game");
@@ -420,6 +423,15 @@ export default function App() {
     setDialogue(null);
     setBattle(null);
     if (mode === "new") persist(next);
+  }
+
+  function toggleSound() {
+    setSoundEnabled((current) => {
+      const next = !current;
+      storeSoundEnabled(next);
+      if (next) void playWallStreetJingle();
+      return next;
+    });
   }
 
   function battleAction(action: NegotiationAction) {
@@ -484,6 +496,9 @@ export default function App() {
             {hasSave ? "Continue" : "New Game"}<small>{hasSave ? "Return to Ledger & Co." : "Begin your brokerage story"}</small>
           </button>
           {hasSave && <button className="title-secondary" onClick={() => startGame("new")}>Start a new game</button>}
+          <button className="title-sound" aria-pressed={soundEnabled} onClick={toggleSound}>
+            <span>{soundEnabled ? "♪" : "×"}</span> WALL STREET JINGLE · {soundEnabled ? "ON" : "OFF"}
+          </button>
           <div className="title-controls">WASD TO ROAM · V CAMERA · F TO WORK · 2D MODE AVAILABLE</div>
           <div className="simulation-ribbon">FICTIONAL & CRYPTO-TEST MARKETS · NO REAL VALUE · REGULATED MODULES LOCKED</div>
         </section>
