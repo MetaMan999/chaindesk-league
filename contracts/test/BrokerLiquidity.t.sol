@@ -402,6 +402,10 @@ contract BrokerLicenseTest {
         if (license.ownerOf(brokerId) != BANKER) revert("license owner");
         if (bytes(license.tokenURI(brokerId)).length == 0) revert("metadata");
 
+        vm.expectRevert(BrokerLicense.OwnershipCycle.selector);
+        vm.prank(BANKER);
+        license.transferFrom(BANKER, account, brokerId);
+
         vm.prank(BANKER);
         license.transferFrom(BANKER, BUYER, brokerId);
         if (registry.ownerOfBroker(brokerId) != BUYER) revert("dynamic controller");

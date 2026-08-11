@@ -38,6 +38,7 @@ contract BrokerLicense is Ownable {
     error InvalidDeskName();
     error NonexistentToken();
     error NotApproved();
+    error OwnershipCycle();
     error PublicMintDisabled();
     error RecipientAlreadyLicensed();
     error UnsafeRecipient();
@@ -130,6 +131,8 @@ contract BrokerLicense is Ownable {
         if (tokenOwner != from) revert NotApproved();
         if (to == address(0)) revert ZeroAddress();
         if (_balanceOf[to] != 0) revert RecipientAlreadyLicensed();
+        (address boundAccount,) = bindingOf(tokenId);
+        if (boundAccount != address(0) && to == boundAccount) revert OwnershipCycle();
         if (
             msg.sender != tokenOwner && msg.sender != getApproved[tokenId]
                 && !isApprovedForAll[tokenOwner][msg.sender]

@@ -5,6 +5,7 @@ import { BankerHook } from "../src/BankerHook.sol";
 import { BrokerLicense } from "../src/BrokerLicense.sol";
 import { BrokerRegistry } from "../src/BrokerRegistry.sol";
 import { BrokerRouter } from "../src/BrokerRouter.sol";
+import { BrokerTokenBoundAccount } from "../src/BrokerTokenBoundAccount.sol";
 import { FaucetTestAsset } from "../src/FaucetTestAsset.sol";
 import { IERC6551Registry } from "../src/interfaces/IERC6551Registry.sol";
 import { IERC721Owner } from "../src/interfaces/ITokenInterfaces.sol";
@@ -25,7 +26,9 @@ interface VmBrokerLiquidity {
 /// @dev Defaults to local or Robinhood Chain Testnet. Robinhood Stock Tokens are never registered
 ///      automatically; canonical addresses and market state must be synchronized separately.
 contract DeployBrokerLiquidity {
+    error InvalidTestSwapFee(uint256 feeBps);
     error IdentityNftMatchesFungibleToken();
+    error RegistryUnavailable(address registry);
     error UnsupportedChain(uint256 chainId);
 
     VmBrokerLiquidity private constant vm =
@@ -53,15 +56,21 @@ contract DeployBrokerLiquidity {
         address brokerNft = vm.envOr("BROKER_IDENTITY_NFT_ADDRESS", address(0));
         address stonkBrokerToken = vm.envOr("STONKBROKER_TOKEN_ADDRESS", address(0));
         address erc6551Registry = vm.envAddress("ERC6551_REGISTRY_ADDRESS");
-        address accountImplementation = vm.envAddress("ERC6551_ACCOUNT_IMPLEMENTATION");
+        address configuredAccountImplementation =
+            vm.envOr("ERC6551_ACCOUNT_IMPLEMENTATION", address(0));
         uint256 nftChainId = vm.envOr("BROKER_IDENTITY_NFT_CHAIN_ID", block.chainid);
         uint256 accountSalt = vm.envOr("ERC6551_ACCOUNT_SALT", uint256(0));
         uint256 feeBps = vm.envOr("TEST_SWAP_FEE_BPS", uint256(30));
+        if (feeBps > 100) revert InvalidTestSwapFee(feeBps);
         if (brokerNft == stonkBrokerToken && stonkBrokerToken != address(0)) {
             revert IdentityNftMatchesFungibleToken();
         }
+        if (erc6551Registry.code.length == 0) revert RegistryUnavailable(erc6551Registry);
 
         vm.startBroadcast(privateKey);
+        if (configuredAccountImplementation == address(0)) {
+            configuredAccountImplementation = address(new BrokerTokenBoundAccount());
+        }
         if (brokerNft == address(0)) {
             license = new BrokerLicense(deployer, true);
             brokerNft = address(license);
@@ -90,7 +99,7 @@ contract DeployBrokerLiquidity {
             deployer,
             IERC721Owner(brokerNft),
             IERC6551Registry(erc6551Registry),
-            accountImplementation,
+            configuredAccountImplementation,
             bytes32(accountSalt),
             nftChainId,
             assets
