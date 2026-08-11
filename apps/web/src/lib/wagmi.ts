@@ -24,6 +24,18 @@ export const robinhoodTestnet = defineChain({
   testnet: true,
 });
 
+export const robinhoodMainnet = defineChain({
+  id: 4663,
+  name: "Robinhood Chain",
+  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+  rpcUrls: {
+    default: { http: ["https://rpc.mainnet.chain.robinhood.com"] },
+  },
+  blockExplorers: {
+    default: { name: "Robinhood Chain Explorer", url: "https://robinhoodchain.blockscout.com" },
+  },
+});
+
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID?.trim();
 const connectors = [injected({ shimDisconnect: true })];
 
@@ -32,8 +44,8 @@ if (projectId) {
     walletConnect({
       projectId,
       metadata: {
-        name: "ChainDesk League",
-        description: "A fictional onchain brokerage strategy game",
+        name: "Banker Bros",
+        description: "An original Wall Street RPG with a testnet brokerage layer",
         url: window.location.origin,
         icons: [],
       },
@@ -46,11 +58,12 @@ const rpc = import.meta.env.VITE_RPC_URL?.trim();
 const preferredChainId = Number(import.meta.env.VITE_CHAIN_ID || baseSepolia.id);
 
 export const wagmiConfig = createConfig({
-  chains: [baseSepolia, sepolia, robinhoodTestnet, anvil],
+  chains: [baseSepolia, sepolia, robinhoodMainnet, robinhoodTestnet, anvil],
   connectors,
   transports: {
     [baseSepolia.id]: http(preferredChainId === baseSepolia.id && rpc ? rpc : baseSepolia.rpcUrls.default.http[0]),
     [sepolia.id]: http(preferredChainId === sepolia.id && rpc ? rpc : sepolia.rpcUrls.default.http[0]),
+    [robinhoodMainnet.id]: http(preferredChainId === robinhoodMainnet.id && rpc ? rpc : robinhoodMainnet.rpcUrls.default.http[0]),
     [robinhoodTestnet.id]: http(preferredChainId === robinhoodTestnet.id && rpc ? rpc : robinhoodTestnet.rpcUrls.default.http[0]),
     [anvil.id]: http(anvil.rpcUrls.default.http[0]),
   },

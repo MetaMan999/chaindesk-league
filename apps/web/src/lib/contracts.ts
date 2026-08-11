@@ -28,6 +28,50 @@ export const workFloorAddress = isAddress(import.meta.env.VITE_WORK_FLOOR_ADDRES
   ? (import.meta.env.VITE_WORK_FLOOR_ADDRESS as `0x${string}`)
   : zeroAddress;
 
+export const brokerLicenseAddress = isAddress(import.meta.env.VITE_BROKER_LICENSE_ADDRESS ?? "")
+  ? (import.meta.env.VITE_BROKER_LICENSE_ADDRESS as `0x${string}`)
+  : zeroAddress;
+
+export const brokerIdentityNftAddress = isAddress(import.meta.env.VITE_BROKER_IDENTITY_NFT_ADDRESS ?? "")
+  ? (import.meta.env.VITE_BROKER_IDENTITY_NFT_ADDRESS as `0x${string}`)
+  : brokerLicenseAddress;
+
+export const stonkBrokerTokenAddress = isAddress(import.meta.env.VITE_STONKBROKER_TOKEN_ADDRESS ?? "")
+  ? (import.meta.env.VITE_STONKBROKER_TOKEN_ADDRESS as `0x${string}`)
+  : zeroAddress;
+
+export const erc6551RegistryAddress = isAddress(import.meta.env.VITE_ERC6551_REGISTRY_ADDRESS ?? "")
+  ? (import.meta.env.VITE_ERC6551_REGISTRY_ADDRESS as `0x${string}`)
+  : zeroAddress;
+
+export const brokerRegistryAddress = isAddress(import.meta.env.VITE_BROKER_REGISTRY_ADDRESS ?? "")
+  ? (import.meta.env.VITE_BROKER_REGISTRY_ADDRESS as `0x${string}`)
+  : zeroAddress;
+
+export const brokerVaultAddress = isAddress(import.meta.env.VITE_BROKER_VAULT_ADDRESS ?? "")
+  ? (import.meta.env.VITE_BROKER_VAULT_ADDRESS as `0x${string}`)
+  : zeroAddress;
+
+export const brokerRouterAddress = isAddress(import.meta.env.VITE_BROKER_ROUTER_ADDRESS ?? "")
+  ? (import.meta.env.VITE_BROKER_ROUTER_ADDRESS as `0x${string}`)
+  : zeroAddress;
+
+export const bankerHookAddress = isAddress(import.meta.env.VITE_BANKER_HOOK_ADDRESS ?? "")
+  ? (import.meta.env.VITE_BANKER_HOOK_ADDRESS as `0x${string}`)
+  : zeroAddress;
+
+export const robinhoodAssetRegistryAddress = isAddress(import.meta.env.VITE_ROBINHOOD_ASSET_REGISTRY_ADDRESS ?? "")
+  ? (import.meta.env.VITE_ROBINHOOD_ASSET_REGISTRY_ADDRESS as `0x${string}`)
+  : zeroAddress;
+
+export const directTestTokenAAddress = isAddress(import.meta.env.VITE_DIRECT_TEST_TOKEN_A ?? "")
+  ? (import.meta.env.VITE_DIRECT_TEST_TOKEN_A as `0x${string}`)
+  : zeroAddress;
+
+export const directTestTokenBAddress = isAddress(import.meta.env.VITE_DIRECT_TEST_TOKEN_B ?? "")
+  ? (import.meta.env.VITE_DIRECT_TEST_TOKEN_B as `0x${string}`)
+  : zeroAddress;
+
 export const contractsConfigured = gameAddress !== zeroAddress;
 
 export const gameAbi = parseAbi([
@@ -162,4 +206,51 @@ export const erc20ReadOnlyAbi = parseAbi([
   "function balanceOf(address account) view returns (uint256)",
   "function decimals() view returns (uint8)",
   "function symbol() view returns (string)",
+]);
+
+export const erc20ApprovalAbi = parseAbi([
+  "function faucet()",
+  "function approve(address spender, uint256 amount) returns (bool)",
+  "function allowance(address owner, address spender) view returns (uint256)",
+  "function balanceOf(address account) view returns (uint256)",
+  "function decimals() view returns (uint8)",
+  "function symbol() view returns (string)",
+]);
+
+export const externalBrokerNftAbi = parseAbi([
+  "function ownerOf(uint256 tokenId) view returns (address)",
+]);
+
+export const brokerLicenseAbi = parseAbi([
+  "function mintLicense(bytes32 deskName) returns (uint256 tokenId)",
+  "function enterWallStreet(bytes32 deskName) returns (uint256 tokenId, address tokenBoundAccount, address vault)",
+  "function licenseOf(address owner) view returns (uint256)",
+  "function ownerOf(uint256 tokenId) view returns (address)",
+  "function bindingOf(uint256 tokenId) view returns (address account, address vault)",
+  "function tokenURI(uint256 tokenId) view returns (string)",
+]);
+
+export const brokerRegistryAbi = parseAbi([
+  "function registerBroker(uint256 brokerId) returns (address tokenBoundAccount, address vault)",
+  "function vaultForBroker(uint256 brokerId) view returns (address)",
+  "function ownerOfBroker(uint256 brokerId) view returns (address)",
+  "function brokers(uint256 brokerId) view returns (address tokenBoundAccount, address vault, uint64 registeredAt, uint64 trades, uint256 aum, uint256 lifetimeVolume, uint256 lifetimeCommission, uint256 reputation)",
+]);
+
+export const brokerVaultAbi = parseAbi([
+  "function deposit(address asset, uint256 amount)",
+  "function withdraw(address asset, uint256 amount, address to)",
+  "function balanceOf(address asset) view returns (uint256)",
+]);
+
+export const brokerRouterAbi = parseAbi([
+  "function routeTestSwap(uint256 brokerId, address tokenIn, address tokenOut, uint256 amountIn, uint256 minAmountOut, uint64 deadline) returns (bytes32 orderId, uint256 amountOut)",
+  "function testSwapFeeBps() view returns (uint16)",
+  "function paused() view returns (bool)",
+]);
+
+export const robinhoodAssetRegistryAbi = parseAbi([
+  "function isDirectAsset(address token) view returns (bool)",
+  "function isQualifiedAsset(address token) view returns (bool)",
+  "function assets(address token) view returns (bytes32 uid, bytes12 symbol, uint8 assetClass, uint64 updatedAt, uint128 multiplierWad, bool active, bool halted, bool directVaultEnabled)",
 ]);
