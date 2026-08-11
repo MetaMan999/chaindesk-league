@@ -1,0 +1,45 @@
+{
+  "network": "Robinhood Chain Testnet",
+  "chainId": 46630,
+  "rpcUrl": "https://rpc.testnet.chain.robinhood.com",
+  "explorerUrl": "https://explorer.testnet.chain.robinhood.com",
+  "deployedAt": "2026-08-11T21:44:41Z",
+  "deployerAndTestnetOwner": "0x2a35659BE672026F38F558cBf1245d7a174be312",
+  "deployment": {
+    "firstTransactionHash": "0xeea42b2e7ab6c6a9cebbc52cc96a84e88a2abda9f0495b51d5b1cd16a7bc0f8c",
+    "finalTransactionHash": "0x700d00d2f8ac6a3d6877387f481d8a413d37267f89b2daaca09924d9828b09f6",
+    "transactionCount": 20
+  },
+  "contracts": {
+    "erc6551Registry": "0x000000006551c19487814612e58FE06813775758",
+    "brokerTokenBoundAccountImplementation": "0x94E083836e852BaC945D09490dD4b13B44C5D883",
+    "brokerLicense": "0xbAAdEaca3EF3Da61a0127Fb4FE134258ff330D63",
+    "robinhoodAssetRegistry": "0xBA18295347ad5b669C7Ef7280EB759Df0bABfdA0",
+    "bbUSD": "0x692255F4493E736bD633571E6a5Ea44E2916655C",
+    "bbETH": "0x305Cc58247806D121DbbC50412557EEc303d33EC",
+    "brokerRegistry": "0x6cbD1Fd4ce8e2bD0293305da73E42C8A4F1f2983",
+    "bankerHook": "0xC2E4adFec6F3f00D7E37D97b7E1DB235bfB1185e",
+    "brokerRouter": "0xa709a4E95958D525400Be4345Eb306e69Df18EE7"
+  },
+  "safety": {
+    "testSwapFeeBps": 30,
+    "qualifiedPartner": "0x0000000000000000000000000000000000000000",
+    "directStockTokenRoutingEnabled": false,
+    "stonkBrokerEcosystemToken": "0xe934e36A439C94017B64a3FecE66AF12099aBF50"
+  },
+  "acceptanceTest": {
+    "brokerId": 1,
+    "deskName": "BANKER BROS HQ",
+    "onboardingTransactionHash": "0x3b85b371cdbf2dded1d544357ccb28ac4d6ee06c9b89a08836b6cad2762a9c6c",
+    "swapTransactionHash": "0x25b664f761221c1bc693cf60f29a27d87ba1afbbd5c64411007eadecd10bce03",
+    "tokenBoundAccount": "0xf4E50FABB0eda0A6f1cf6276b29062eAE93EaBF0",
+    "vault": "0x7F2B5ea4dc8B8529B48a9B9ECf40f868B525E49b",
+    "trades": 1,
+    "aumSixDecimals": "10003000000",
+    "lifetimeVolumeSixDecimals": "1000000000",
+    "lifetimeCommissionSixDecimals": "2100000",
+    "reputation": 1,
+    "vaultBbUsdSixDecimals": "1000000000",
+    "vaultBbEthSixDecimals": "9003000000"
+  }
+}
