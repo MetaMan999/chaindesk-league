@@ -1,10 +1,38 @@
-# ChainDesk League
+# Banker Bros: Wall Street District
 
-ChainDesk League is a deployable, testnet-first onchain brokerage strategy game built around a fixed collection of 1,000 dynamic banker NFTs. Players mint a banker profile, open an onchain desk, route fictional paper-market orders, earn valueless commission credits, and climb a 100-floor public progression tower.
+Banker Bros is a playable, testnet-first Wall Street career RPG built on the ChainDesk League protocol foundation. Players now begin in a roaming 3D city, switch freely between third-person and first-person views, travel to workplaces, take programmable jobs, meet clients, grow AUM and reputation, and map meaningful game actions to onchain brokerage infrastructure. The original top-down pixel district remains available as a complete alternate game mode.
 
-The interface uses an original late-1980s Manhattan trading-floor treatment filtered through a late-1990s 64-bit console game: an explorable low-poly office, clickable CRT terminals, amber order tickets, a red syndicate phone, an executive elevator, Windows-era chrome, and dynamic broker credentials. The office is the primary navigation hub, while the theme remains fictional and never changes the simulation-only product boundary.
+The vertical slice uses an original 16-bit/32-bit pixel-art-inspired visual language: a tile-based Wall Street overworld, expressive banker sprites, dialogue boxes, enterable interiors, a briefcase inventory, client quests, and turn-based brokerage negotiations. It is inspired by the warmth and clarity of classic handheld RPGs without copying characters, maps, sprites, music, logos, interface assets, or proprietary content from any existing game.
 
-It is deliberately **not** a securities platform: the four companies are fictional, positions are non-transferable game inventory, prices are a manipulable simulation, and credits have no cash value. The contracts are unaudited and should remain on local networks or public testnets.
+The default experience is deliberately **not** a securities platform: markets are fictional or crypto-test labels, positions are game inventory, prices are simulated, and credits have no cash value. Robinhood Stock Token compatibility now exists only as an optional qualified-order boundary; it is inactive without a separately approved eligibility and execution partner.
+
+## Playable Wall Street vertical slice
+
+- A new default 3D Wall Street career world with third-person and first-person cameras, block-by-block roaming, collision, moving traffic, and resident NPC bankers.
+- A complete graphics remaster: cinematic 32-bit-inspired title art, session-aware sky and lighting, detailed façades, glowing windows, Exchange columns, a bronze bull landmark, animated banker rigs, modeled vehicles, street furniture, richer pixel materials, and glass-and-brass HUD styling.
+- Eight data-driven city programs across the Exchange, bank, brokerage, coffee shop, subway, and simulated OTC zone; each program defines energy, cooldown, XP, reputation, commission, AUM, and optional chain intent.
+- Glowing workplace markers, contextual work menus, career levels, energy, job titles, touch controls, and persistent career progress.
+- Tile-based Wall Street overworld with collision, keyboard movement, and touch controls.
+- Enterable Exchange, bank lobby, brokerage office, coffee shop, OTC alley, and subway placeholder.
+- NPC bankers, clients, rivals, environmental inspection, dialogue, and interaction prompts.
+- Three linked quests with item rewards and persistent progress.
+- Finance-themed negotiation encounters using Tight Quote, Source Liquidity, Read the Tape, and Hedge Risk.
+- Reputation, rank, commission, AUM, office level, briefcase inventory, and office upgrades.
+- Market-open state derived from the local clock and a simulated live tape.
+- Autosave plus manual save through browser local storage.
+- A guided wallet flow for minting a dedicated Broker License NFT → ERC-6551 account → `BrokerRegistry` → isolated `BrokerVault` → test deposit → routed test order → `BankerHook` attribution → RPG progression.
+- One-confirmation `Enter Wall Street` onboarding that mints and binds the Broker License atomically, plus automatic detection for returning license holders.
+- A living Trading Hub with resident Exchange-floor brokers, a rotating district pulse, broker meetings, and a ladder driven by reputation, commission, AUM, and office growth.
+- A Robinhood asset registry for canonical Stock Token UID, deployment, multiplier, active/halt, and freshness metadata, with direct vault routing prohibited for Stock Tokens.
+- Existing wagmi wallet connection plus a read-only bridge for live BankerProfile identity, tower, office, credit, and desk state.
+- Multiple banker profiles in one wallet can be selected from the Chain Desk.
+
+Full slice notes and the game-to-chain event map are in [docs/WALL_STREET_VERTICAL_SLICE.md](docs/WALL_STREET_VERTICAL_SLICE.md).
+The persistent-world architecture and rollout phases are in [docs/LIVE_WORLD_TRADING_HUB.md](docs/LIVE_WORLD_TRADING_HUB.md).
+The 3D controls, workplaces, program schema, and expansion path are in [docs/3D_CITY.md](docs/3D_CITY.md).
+The remastered art direction and procedural graphics system are in [docs/GRAPHICS_REMASTER.md](docs/GRAPHICS_REMASTER.md).
+
+The contracts are unaudited and should remain on local networks or public testnets.
 
 ## What was learned from the reference product
 
@@ -68,7 +96,14 @@ flowchart LR
     E["Partner eligibility attestation"] --> R["Read-only achievement registry"]
     R --> G
     H["Optional v4 afterSwap adapter"] -->|"allowlisted fictional pools; volume only"| G
-    Q["Qualified execution partner interface"] -. "not implemented or deployed" .-> G
+    N["External broker NFT"] --> I["ERC-6551 account"]
+    I --> BR["BrokerRegistry + isolated BrokerVault"]
+    BR --> RT["BrokerRouter test assets"]
+    RT --> BH["BankerHook attribution"]
+    BH --> G
+    RA["Robinhood canonical asset state"] --> AR["RobinhoodAssetRegistry"]
+    AR --> Q["Qualified Stock Token order boundary"]
+    Q -. "requires approved partner; not deployed" .-> BH
 ```
 
 ### Contracts
@@ -88,8 +123,15 @@ flowchart LR
 | `EligibilityRegistry.sol` | Time-bounded eligibility attestations from an approved partner; it performs no identity checks itself. |
 | `ReadOnlyAchievementRegistry.sol` | Reads an allowlisted token balance after eligibility and records a badge. It has no transfer, approval, custody, or execution path. |
 | `IQualifiedExecutionPartner.sol` | Future typed boundary for a licensed provider. No implementation is deployed. |
+| `BrokerRegistry.sol` | Registers an externally owned broker NFT, resolves/creates its ERC-6551 account, deploys one isolated vault, and records AUM, volume, commission, and reputation. |
+| `BrokerVault.sol` | NFT-controlled vault restricted to explicitly allowlisted six-decimal crypto/test assets; Stock Tokens cannot be deposited. |
+| `BrokerRouter.sol` | Routes same-unit test swaps and exposes a separate non-custodial Stock Token order boundary with eligibility checks. |
+| `BankerHook.sol` | Attributes direct test orders and verified qualified fills to broker progression; it does not execute swaps or custody assets. |
+| `RobinhoodAssetRegistry.sol` | Stores canonical Stock Token UID, symbol, class, multiplier, active/halt state, and a one-hour default freshness limit. |
+| `FaucetTestAsset.sol` | Valueless public-testnet faucet token used to exercise the complete deposit and routing loop. |
+| `BrokerLicense.sol` | Dedicated 10,000-supply ERC-721 brokerage identity with one public testnet mint per wallet, fully onchain art, transfers, and dynamic ERC-6551/vault binding metadata. |
 
-The frontend is a Vite/React application with wagmi, viem, injected-wallet support, optional WalletConnect, demo data, contract writes, transaction status, responsive layouts, a mandatory simulation notice, an interactive 100-floor elevator, evolving offices, and an inter-firm headquarters experience. Its default view is a responsive 64-bit-era 3D banker office: the CRTs, phone, elevator, desk, and Closing Bell board are accessible buttons that route to the corresponding live game modules. The connected-wallet badge and broker credential read the same settled floor and rank as the dynamic NFT.
+The frontend is a Vite/React RPG shell with wagmi, viem, injected-wallet support, optional WalletConnect, responsive keyboard/touch controls, and persistent local saves. `src/lib/rpg.ts` owns deterministic map, collision, quest, inventory, rank, and negotiation rules. `src/lib/onchainBroker.ts` performs safe read-only synchronization with the existing `BankerProfile` and `BrokerGame` deployments. The Chain Desk now also drives the external NFT/ERC-6551 testnet transaction sequence and writes a confirmed swap's commission, reputation, and retained-fee AUM into the RPG save.
 
 ### NFT portability and onchain rank
 
@@ -150,16 +192,21 @@ The daily Closing Bell score is deliberately separate from the client-outcome le
 ├── apps/web/                    React + wagmi frontend
 │   ├── src/components/          Wallet, disclaimer, and chart components
 │   ├── src/lib/                 ABIs, chain config, and economy helpers
-│   ├── public/assets/           Original optimized 64-bit office environment
+│   ├── public/assets/           Original Wall Street title art and game imagery
 │   └── .env.example
 ├── contracts/
 │   ├── src/                     Solidity contracts
 │   ├── src/hooks/               Optional v4 hook-shaped adapter
 │   ├── src/randomness/          VRF v2.5 adapter and local-only mock
 │   ├── script/Deploy.s.sol      Testnet-guarded deployment
+│   ├── script/DeployBrokerLiquidity.s.sol External NFT/ERC-6551 liquidity deployment
 │   ├── script/DeployWorkFloor.s.sol  Optional randomness/work deployment
 │   └── test/BrokerGame.t.sol    Foundry integration tests
 ├── docs/REFERENCE_ANALYSIS.md
+├── docs/3D_CITY.md
+├── docs/GRAPHICS_REMASTER.md
+├── docs/LIVE_WORLD_TRADING_HUB.md
+├── docs/ROBINHOOD_STOCK_TOKEN_INTEGRATION.md
 ├── .env.example
 ├── foundry.toml
 └── package.json
@@ -236,6 +283,14 @@ VITE_ELIGIBILITY_ADDRESS=0x...
 VITE_CREW_ADDRESS=0x...
 VITE_DEAL_ROOM_ADDRESS=0x...
 VITE_WORK_FLOOR_ADDRESS=0x...
+VITE_STONKBROKER_TOKEN_ADDRESS=0xe934e36A439C94017B64a3FecE66AF12099aBF50
+VITE_BROKER_LICENSE_ADDRESS=0x...
+VITE_BROKER_IDENTITY_NFT_ADDRESS=0x...
+VITE_ERC6551_REGISTRY_ADDRESS=0x...
+VITE_BROKER_REGISTRY_ADDRESS=0x...
+VITE_BROKER_VAULT_ADDRESS=0x...
+VITE_BROKER_ROUTER_ADDRESS=0x...
+VITE_BANKER_HOOK_ADDRESS=0x...
 VITE_PROFILE_MINT_FEE_ETH=0.001
 VITE_WALLETCONNECT_PROJECT_ID=
 ```
@@ -329,9 +384,35 @@ VITE_CHAIN_ID=46630
 VITE_RPC_URL=https://rpc.testnet.chain.robinhood.com
 ```
 
-Deploy only the simulated core game there first. Do not guess a VRF coordinator or reuse Base Sepolia's address. Deploy `BankerWorkFloor` on Robinhood Chain only after Chainlink publishes and you independently verify supported v2.5 coordinator, key-hash, funding, and confirmation settings for chain `46630`.
+Deploy the simulated core game first. Do not guess a VRF coordinator or reuse Base Sepolia's address. Deploy `BankerWorkFloor` on Robinhood Chain only after Chainlink publishes and you independently verify supported v2.5 coordinator, key-hash, funding, and confirmation settings for chain `46630`.
 
-The Collector Cabinet can read a connected wallet's ERC-20 balance on the selected network. It has no approve, transfer, swap, bridge, or custody call. Robinhood's own disclosures describe its Stock Tokens as tokenized debt securities giving economic exposure rather than legal or beneficial ownership of the underlying security. Accordingly, this game does not trade them, reward larger holdings, or treat them as fictional paper assets. Any regulated execution remains disabled until a qualified partner supplies the full compliant stack.
+The verified [StonkBroker contract](https://robinhoodchain.blockscout.com/token/0xe934e36A439C94017B64a3FecE66AF12099aBF50), `0xe934e36A439C94017B64a3FecE66AF12099aBF50`, is an 18-decimal ERC-20 on Robinhood Chain mainnet, not an ERC-721. It is configured separately as `STONKBROKER_TOKEN_ADDRESS` for read-only ecosystem display and must never be supplied to the ERC-6551 identity field.
+
+The NFT/ERC-6551 liquidity layer has a separate guarded deployment. Setting `BROKER_IDENTITY_NFT_ADDRESS` to the zero address deploys the included `BrokerLicense` on the current chain and uses it automatically. Supplying an external identity NFT remains supported, but it must be readable on the deployment chain; a cross-chain NFT requires an independently reviewed bridge or ownership attestation rather than pretending a remote `ownerOf` call is available.
+
+```bash
+export STONKBROKER_TOKEN_ADDRESS="0xe934e36A439C94017B64a3FecE66AF12099aBF50"
+# Use the zero address to deploy the dedicated BrokerLicense automatically.
+export BROKER_IDENTITY_NFT_ADDRESS="0x0000000000000000000000000000000000000000"
+export BROKER_IDENTITY_NFT_CHAIN_ID=46630
+export ERC6551_REGISTRY_ADDRESS=0x000000006551c19487814612e58FE06813775758
+export ERC6551_ACCOUNT_IMPLEMENTATION="<REVIEWED_ACCOUNT_IMPLEMENTATION>"
+
+# Dry run first
+forge script contracts/script/DeployBrokerLiquidity.s.sol:DeployBrokerLiquidity \
+  --rpc-url "$ROBINHOOD_TESTNET_RPC_URL"
+
+# Broadcast only after checking every resolved address
+forge script contracts/script/DeployBrokerLiquidity.s.sol:DeployBrokerLiquidity \
+  --rpc-url "$ROBINHOOD_TESTNET_RPC_URL" \
+  --broadcast
+```
+
+The script deploys the dedicated Broker License when no external identity NFT is supplied, plus `bbUSD` and `bbETH` faucet tokens for the direct game loop. It binds the license metadata view to `BrokerRegistry`. It does **not** register any Stock Token or configure a qualified execution partner. Put the emitted license, registry, router, hook, asset-registry, and test-token addresses into the corresponding `VITE_` variables, then use the RPG's Chain Desk to mint, bind, fund, and route the test order.
+
+For Stock Tokens, synchronize only canonical contract addresses and UIDs from Robinhood's asset data, update multiplier/active/halt metadata through a controlled attestor, and keep state fresh. The router then accepts an order only if the asset is current and not halted and the configured partner confirms wallet eligibility. The partner settles externally and may report a fill for game attribution; Stock Tokens never enter `BrokerVault`.
+
+Full integration and operational requirements are in [docs/ROBINHOOD_STOCK_TOKEN_INTEGRATION.md](docs/ROBINHOOD_STOCK_TOKEN_INTEGRATION.md).
 
 ## Managed portfolios and scoring
 
@@ -354,7 +435,7 @@ Claiming reads `balanceOf` and increments NFT achievement count. The registry ca
 
 ## Qualified execution boundary
 
-`IQualifiedExecutionPartner.sol` is intentionally an interface only. The deployment script creates no execution router and the frontend shows regulated execution as disabled. A future implementation requires a named provider contract and documented eligibility, jurisdiction, disclosures, custody, execution, best-execution, settlement, corporate-action, complaint, surveillance, and reporting responsibilities. Do not replace this with a generic arbitrary-call router.
+`BrokerRouter.sol` implements the order boundary, while `IQualifiedExecutionPartner.sol` remains an interface only. No partner implementation or Stock Token is configured by deployment, so regulated execution remains disabled. Enabling it requires a named provider contract and documented eligibility, jurisdiction, disclosures, custody, execution, best-execution, settlement, corporate-action, complaint, surveillance, and reporting responsibilities. Do not replace this with a generic arbitrary-call router.
 
 ## Uniswap v4 integration boundary
 
@@ -377,7 +458,7 @@ Treat the included adapter as an integration boundary, not as a production-ready
 - Commission credits are internal ledger entries; `PaperAsset` positions cannot be transferred.
 - Read-only achievements should reward education or observation, not real-asset trading volume or rapid turnover.
 - Eligibility attestations expire and must come from a provider that actually performs the required checks.
-- No real execution contract is deployed.
+- No qualified Stock Token execution partner is included or deployed.
 - The market epoch uses manipulable block entropy because outcomes have no financial value. Never reuse it where randomness secures value.
 - The faucet is intentionally sybilable and suitable only for a game/test environment.
 - The contracts have not been audited. Run static analysis, fuzz and invariant tests, fork tests, access-control review, and an external audit before any broader release.
