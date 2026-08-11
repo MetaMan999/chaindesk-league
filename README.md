@@ -130,6 +130,7 @@ flowchart LR
 | `RobinhoodAssetRegistry.sol` | Stores canonical Stock Token UID, symbol, class, multiplier, active/halt state, and a one-hour default freshness limit. |
 | `FaucetTestAsset.sol` | Valueless public-testnet faucet token used to exercise the complete deposit and routing loop. |
 | `BrokerLicense.sol` | Dedicated 10,000-supply ERC-721 brokerage identity with one public testnet mint per wallet, fully onchain art, transfers, and dynamic ERC-6551/vault binding metadata. |
+| `BrokerTokenBoundAccount.sol` | Minimal ERC-6551 account controlled by the current Broker License owner, with owner-only calls, ERC-1271 signatures, and NFT receiver support. |
 
 The frontend is a Vite/React RPG shell with wagmi, viem, injected-wallet support, optional WalletConnect, responsive keyboard/touch controls, and persistent local saves. `src/lib/rpg.ts` owns deterministic map, collision, quest, inventory, rank, and negotiation rules. `src/lib/onchainBroker.ts` performs safe read-only synchronization with the existing `BankerProfile` and `BrokerGame` deployments. The Chain Desk now also drives the external NFT/ERC-6551 testnet transaction sequence and writes a confirmed swap's commission, reputation, and retained-fee AUM into the RPG save.
 
@@ -396,7 +397,8 @@ export STONKBROKER_TOKEN_ADDRESS="0xe934e36A439C94017B64a3FecE66AF12099aBF50"
 export BROKER_IDENTITY_NFT_ADDRESS="0x0000000000000000000000000000000000000000"
 export BROKER_IDENTITY_NFT_CHAIN_ID=46630
 export ERC6551_REGISTRY_ADDRESS=0x000000006551c19487814612e58FE06813775758
-export ERC6551_ACCOUNT_IMPLEMENTATION="<REVIEWED_ACCOUNT_IMPLEMENTATION>"
+# Optional: leave unset to deploy the repository's BrokerTokenBoundAccount implementation.
+unset ERC6551_ACCOUNT_IMPLEMENTATION
 
 # Dry run first
 forge script contracts/script/DeployBrokerLiquidity.s.sol:DeployBrokerLiquidity \
@@ -412,7 +414,7 @@ The script deploys the dedicated Broker License when no external identity NFT is
 
 For Stock Tokens, synchronize only canonical contract addresses and UIDs from Robinhood's asset data, update multiplier/active/halt metadata through a controlled attestor, and keep state fresh. The router then accepts an order only if the asset is current and not halted and the configured partner confirms wallet eligibility. The partner settles externally and may report a fill for game attribution; Stock Tokens never enter `BrokerVault`.
 
-Full integration and operational requirements are in [docs/ROBINHOOD_STOCK_TOKEN_INTEGRATION.md](docs/ROBINHOOD_STOCK_TOKEN_INTEGRATION.md).
+The exact testnet release checklist is in [docs/ROBINHOOD_TESTNET_DEPLOYMENT.md](docs/ROBINHOOD_TESTNET_DEPLOYMENT.md). Full integration and operational requirements are in [docs/ROBINHOOD_STOCK_TOKEN_INTEGRATION.md](docs/ROBINHOOD_STOCK_TOKEN_INTEGRATION.md).
 
 ## Managed portfolios and scoring
 
