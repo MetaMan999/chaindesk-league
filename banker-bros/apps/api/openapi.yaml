@@ -1,0 +1,46 @@
+openapi: 3.1.0
+info:
+  title: Banker Bros Read API
+  version: 0.1.0
+paths:
+  /v1/seasons/{seasonId}/leaderboard:
+    get:
+      summary: Read an event-derived seasonal leaderboard
+      parameters:
+        - in: path
+          name: seasonId
+          required: true
+          schema: { type: integer }
+        - in: query
+          name: district
+          schema: { type: string, default: global }
+      responses:
+        "200":
+          description: Ranked brokers plus indexer freshness
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [asOfBlock, stale, rows]
+                properties:
+                  asOfBlock: { type: integer }
+                  stale: { type: boolean }
+                  rows:
+                    type: array
+                    items:
+                      type: object
+                      required: [brokerId, xp, reputation]
+                      properties:
+                        brokerId: { type: string }
+                        xp: { type: string }
+                        reputation: { type: integer }
+  /v1/brokers/{brokerId}:
+    get:
+      summary: Read an indexed broker profile
+      parameters:
+        - in: path
+          name: brokerId
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: Event-derived broker profile }

@@ -1,0 +1,23 @@
+{
+  "chainId": 11155111,
+  "status": "UNDEPLOYED_FALLBACK",
+  "deployedAtBlock": null,
+  "commit": null,
+  "contracts": {
+    "stonkBrokerNft": null,
+    "bankerBrosCollection": null,
+    "brokerRegistry": null,
+    "brokerVaultFactory": null,
+    "brokerRouter": null,
+    "bankerHook": null,
+    "commissionAccounting": null,
+    "reputationEngine": null,
+    "liquidityAttribution": null,
+    "poolManager": null,
+    "bankerBroAccountFactory": null,
+    "cityDealDesk": null
+  },
+  "allowedAdapters": [],
+  "allowedAssets": [],
+  "rwaModulesEnabled": false
+}
